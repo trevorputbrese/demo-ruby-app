@@ -12,3 +12,5 @@ gem 'puma', '~> 5.0'
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker', '~> 6.0.0.rc.6'
+
+gem 'tzinfo-data'

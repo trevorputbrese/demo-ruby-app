@@ -1,0 +1,5 @@
+site_name: 'USCIS Immigration Web Demo'
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core

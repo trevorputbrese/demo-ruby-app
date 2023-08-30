@@ -9,10 +9,12 @@ k8s_custom_deploy(
        " --yes >/dev/null" +
        " && kubectl get workload immigration-web --namespace " + NAMESPACE + " -o yaml",
    delete_cmd="tanzu apps workload delete -f tap/workload.yaml --namespace " + NAMESPACE + " --yes" ,
-   deps=['app.rb', 'Gemfile'],
+   deps=['app', 'public', 'config'],
    container_selector='workload',
    live_update=[
-       sync('./', '/workspace/')
+       sync('./app', '/workspace/app'),
+       sync('./config', '/workspace/config'),
+       sync('./public', '/workspace/public')
    ]
 )
 

@@ -1,0 +1,30 @@
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  labels:
+    app.kubernetes.io/part-of: immigration
+    # apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: web
+  name: immigration-web
+  namespace: global
+spec:
+  source:
+    git:
+      ref:
+        branch: main
+      url: https://github.com/p-ssanders/uscis-ruby-app
+  params:
+  - name: testing_pipeline_matching_labels
+    value:
+      apps.tanzu.vmware.com/pipeline: test
+      apps.tanzu.vmware.com/language: ruby
+      apps.tanzu.vmware.com/version: '2'
+  - name: clusterBuilder
+    value: full-jammy
+  - name: annotations
+    value:
+      autoscaling.knative.dev/minScale: "1"
+  env:
+   - name: SECRET_KEY_BASE
+     value: some-secret-key-base

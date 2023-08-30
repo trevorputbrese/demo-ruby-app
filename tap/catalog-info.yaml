@@ -1,0 +1,22 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: immigration-web
+  namespace: global
+  description: Immigration Web App
+  annotations:
+    backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=immigration"
+    backstage.io/techdocs-ref: dir:.
+  tags:
+   - global
+   - uscis
+   - demo
+  links:
+    - url: https://www.uscis.gov/
+      title: USCIS Home
+      icon: language
+spec:
+  type: service
+  lifecycle: production
+  owner: global-team
+  system: immigration
