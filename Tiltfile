@@ -1,13 +1,14 @@
 LOCAL_PATH = os.getenv("LOCAL_PATH", default='.')
 NAMESPACE = os.getenv("NAMESPACE", default='global')
+WORKLOAD_NAME = 'immigration-web'
 
 k8s_custom_deploy(
-   'immigration-web',
+   WORKLOAD_NAME,
    apply_cmd="tanzu apps workload apply -f tap/workload.yaml --live-update" +
        " --local-path " + LOCAL_PATH +
        " --namespace " + NAMESPACE +
        " --yes >/dev/null" +
-       " && kubectl get workload immigration-web --namespace " + NAMESPACE + " -o yaml",
+       " && kubectl get workload " + WORKLOAD_NAME + " --namespace " + NAMESPACE + " -o yaml",
    delete_cmd="tanzu apps workload delete -f tap/workload.yaml --namespace " + NAMESPACE + " --yes" ,
    deps=['app', 'public', 'config'],
    container_selector='workload',
@@ -18,6 +19,6 @@ k8s_custom_deploy(
    ]
 )
 
-k8s_resource('immigration-web', port_forwards=["8080:8080"],
-   extra_pod_selectors=[{'carto.run/workload-name': 'immigration-web', 'app.kubernetes.io/component': 'run'}])
+k8s_resource(WORKLOAD_NAME, port_forwards=["8080:8080"],
+   extra_pod_selectors=[{'carto.run/workload-name': WORKLOAD_NAME, 'app.kubernetes.io/component': 'run'}])
 allow_k8s_contexts('aks-eus-tap-v1-6-cluster-4')
