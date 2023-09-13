@@ -19,4 +19,4 @@ spec:
   type: service
   lifecycle: production
   owner: global-team
-  system: immigration
+  system: immigration-system
