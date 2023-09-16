@@ -62,7 +62,6 @@ accelerator:
     required: true
   imports:
     - name: tap-workload
-    - name: build-wrapper-maven
 
 engine:
   merge:
