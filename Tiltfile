@@ -16,7 +16,6 @@ k8s_custom_deploy(
        sync('./app', '/workspace/app'),
        sync('./config', '/workspace/config'),
        sync('./public', '/workspace/public')
-       sync('.')
    ]
 )
 
