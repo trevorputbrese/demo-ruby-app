@@ -1,0 +1,99 @@
+accelerator:
+  displayName: Immigration Web Service
+  description: USCIS App for Immigration Web Service developed by Global team
+  iconUrl: https://www.ruby-lang.org/images/header-ruby-logo.png
+  tags: 
+  - Ruby
+  - web
+  - Immigration
+  
+  options:
+  - label: Liveness Probe Port and endpoint
+    description: Endpoint and port for Liveness probe.  Value here will be added to the Workload yaml.
+    defaultValue: "/8080"
+    name: containerPort
+    inputType: text
+    dataType: string
+    required: true
+  - label: Readiness Probe Port and endpoint
+    description: Endpoint and port for Readiness probe.  Value here will be added to the Workload yaml.
+    defaultValue: "/8080"
+    name: servicePort
+    inputType: text
+    dataType: string
+    required: true
+  - label: Workload Namespace
+    description:  The namespace where the application services will be deployed.  This field is needed for properly creating resource claims.
+    defaultValue: workloads
+    name: workloadNamespace
+    inputType: text
+    dataType: string
+    required: true
+  - label: Messaging Service Type
+    description: The type of messaging services the workload will connect to.
+    inputType: select
+    defaultValue: rabbitmq
+    name: brokerType
+    choices:
+    - value: rabbitmq
+      text: RabbitMQ
+    - value: kafka
+      text: Kafka
+  - label: Class Claim Name
+    description: "The name of the Class Claim used to connect to the messaging service."
+    defaultValue: msgbroker-spring-smtp-gateway
+    name: msgbrokerName
+    inputType: text
+    dataType: string
+    required: true
+  imports:
+    - name: tap-workload
+    - name: build-wrapper-maven
+
+engine:
+  merge:
+  - exclude: 
+      ["**/templates/**", "**/icons/**", "**/.git/**", "**/catalog/catalog.yaml"]
+  - include: ["**/config/workload.yaml", "**/templates/workloads.template"]
+    chain:
+    - type: ReplaceText
+      substitutions:
+        - text: "msgbroker-spring-smtp-gateway"
+          with: "#msgbrokerName"
+        - text: "workloads"
+          with: "#workloadNamespace"  
+        - text: "1026"
+          with: "#containerPort"     
+        - text: "25"
+          with: "#servicePort"
+        - text: "<profile>"
+          with: "#brokerType"          
+    - type: RewritePath
+      regex: 'templates/workloads.template'
+      rewriteTo: "'config/workloads.yaml'"
+    - type: InvokeFragment
+      reference: tap-workload
+  - include: [ "**/catalog/catalog.yaml" ]
+    chain:
+      - type: ReplaceText
+        substitutions:
+          - text: "name: smtp-gateway"
+            with: "'name: ' + #artifactId.toLowerCase() + '-smtp-gateway'"
+          - text: "name: smtp-sink"
+            with: "'name: ' + #artifactId.toLowerCase() + '-smtp-sink'"
+          - text: "app.kubernetes.io/part-of=spring-smtp-gateway"
+            with: "'app.kubernetes.io/part-of=' + #artifactId.toLowerCase()"
+  - type: InvokeFragment
+    reference: build-wrapper-maven
+  - chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'smtp-gateway/' + (#folder != null ? #folder : '') + #filename"       
+  - chain:
+    - type: InvokeFragment
+      reference: build-wrapper-maven
+    - type: RewritePath
+      rewriteTo: "'smtp-sink/' + (#folder != null ? #folder : '') + #filename"  
+  - include: ["README.md"]  
+  - type: Provenance
