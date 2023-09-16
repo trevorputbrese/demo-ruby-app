@@ -8,17 +8,31 @@ accelerator:
   - Immigration
   
   options:
-  - label: Liveness Probe Port and endpoint
-    description: Endpoint and port for Liveness probe.  Value here will be added to the Workload yaml.
-    defaultValue: "/8080"
-    name: containerPort
+  - label: Liveness Probe Port
+    description: Port for Liveness probe.  Value here will be added to the Workload yaml.
+    defaultValue: "8080"
+    name: livenessProbePort
     inputType: text
     dataType: string
     required: true
-  - label: Readiness Probe Port and endpoint
-    description: Endpoint and port for Readiness probe.  Value here will be added to the Workload yaml.
-    defaultValue: "/8080"
-    name: servicePort
+  - label: Liveness Probe Path
+    description: Path for Liveness probe.  Value here will be added to the Workload yaml.
+    defaultValue: "/"
+    name: livenessProbePath
+    inputType: text
+    dataType: string
+    required: true
+  - label: Initial Delay Seconds
+    description: Initial Delay Seconds for Liveness probe.  Value here will be added to the Workload yaml.
+    defaultValue: "20"
+    name: initialDelaySeconds
+    inputType: text
+    dataType: string
+    required: true
+  - label: Liveness Probe Interval
+    description: PeriodSeconds for Liveness probe.  Value here will be added to the Workload yaml.
+    defaultValue: "20"
+    name: periodSeconds
     inputType: text
     dataType: string
     required: true
@@ -41,7 +55,7 @@ accelerator:
       text: Kafka
   - label: Class Claim Name
     description: "The name of the Class Claim used to connect to the messaging service."
-    defaultValue: msgbroker-spring-smtp-gateway
+    defaultValue: immigration-meb-messaging-gateway
     name: msgbrokerName
     inputType: text
     dataType: string
