@@ -20,5 +20,5 @@ spec:
   lifecycle: production
   owner: global-team
   system: immigration-system
-  consumesApis:
+  providesApis:
    - global/immigration-rest-service-a6c5a207
